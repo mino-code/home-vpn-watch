@@ -1,0 +1,21 @@
+name: VPN reachability check
+
+on:
+  schedule:
+    # 30分ごと。GitHub Free のプライベート枠を意識した間隔だが、
+    # このリポジトリはパブリックなので実行時間は無制限。
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  openvpn:
+    name: Probe OpenVPN from the public internet
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Probe OpenVPN
+        run: python3 scripts/openvpn_probe.py "${{ secrets.VPN_HOST }}" 1194
